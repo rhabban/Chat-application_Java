@@ -2,6 +2,10 @@ package model;
 
 import javax.swing.JLabel;
 
+/**
+ * @author bastiensebire
+ * Objet de type JLabel. Permet de pouvoir récupérer la position d'un JLabel sur la grille.
+ */
 public class GridCase extends JLabel{
 	
 	private int position;

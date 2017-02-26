@@ -20,6 +20,11 @@ import java.io.File;
 import java.io.IOException;
 
 
+/**
+ * @author bastiensebire
+ * Cette classe permet d'afficher la map et les utilisateurs connectés.
+ * Peut-être devrait-on ajouter un paneau latéral qui permettrait de communiquer avec les autres utilisateurs
+ */
 public class MapView extends JFrame 
 {
     private Container container;
@@ -30,14 +35,17 @@ public class MapView extends JFrame
     {
         super("La dinde");
         
+        // Configuration de la JFrame
         setLayout(null);
         setSize(745,735);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+        // On met l'image de la carte en backbground
         BufferedImage myImage = ImageIO.read(new File("/Users/bastiensebire/Documents/Work/devoir-java/res/carte.png"));
         setContentPane(new ImagePanel(myImage));
         
+        // Déclaration du MapManager et génération de la grille
         mapManager = new MapManager(10);
         gridView = new GridView(mapManager);
         
