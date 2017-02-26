@@ -1,36 +1,29 @@
 package View;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import utils.ImagePanel;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.TransferHandler;
 
-public class TestView extends JFrame 
-{
-    private Container container;
-    public TestView() throws IOException
-    {
-        super("La dinde");
-        
-        setLayout(null);
-        setSize(1000,1000);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        BufferedImage myImage = ImageIO.read(new File("/Users/bastiensebire/Documents/Work/devoir-java/res/carte.png"));
-        setContentPane(new ImagePanel(myImage));
+import model.MapManager;
+import utils.ImagePanel;
+
+public class GridView extends JPanel {
+
+	private MapManager mapManager;
+
+	public GridView(MapManager mapManager) {
+		super();
+		this.mapManager = mapManager;
         
         ImageIcon pinIcon = new ImageIcon("/Users/bastiensebire/Documents/Work/devoir-java/res/pin.png"); // load the image to a imageIcon
         Image pin = pinIcon.getImage(); // transform it 
@@ -60,17 +53,16 @@ public class TestView extends JFrame
             public void mouseExited(MouseEvent e) {}
         };
         
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(10, 10));
-        panel.setOpaque(false);
+        setLayout(new GridLayout(10, 10));
+        setOpaque(false);
         
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < mapManager.getSize() * mapManager.getSize(); i++)
         {
         	JLabel gridCase = new JLabel();
         	gridCase.setSize(200, 200);
         	gridCase.addMouseListener(ml);
         	gridCase.setTransferHandler(new TransferHandler("icon"));
-        	panel.add(gridCase);
+        	add(gridCase);
         }
         
         JLabel pinCase = new JLabel();
@@ -79,20 +71,21 @@ public class TestView extends JFrame
         pinCase.setSize(200, 200);
         pinCase.addMouseListener(ml);
         pinCase.setTransferHandler(new TransferHandler("icon"));
-        panel.add(pinCase, 3);
+        add(pinCase, 3);
         
-        container = this.getContentPane();
-		container.setLayout(new BorderLayout());
-		container.add(panel,BorderLayout.CENTER);
-		container.repaint();
-        
-		setVisible(true);
-    }
+	}
+	public MapManager getMapManager() {
+		return mapManager;
+	}
 
-                   
-       
-  public static void main(String[] args) throws IOException{
-  
-      new TestView();
-  }
+	public void setMapManager(MapManager mapManager) {
+		this.mapManager = mapManager;
+	}
+
+	@Override
+	public String toString() {
+		return "GridView [mapManager=" + mapManager + "]";
+	}
+	
+	
 }

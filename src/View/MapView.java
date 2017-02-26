@@ -1,60 +1,55 @@
 package View;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import model.MapManager;
+import utils.ImagePanel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-public class MapView extends JFrame
+public class MapView extends JFrame 
 {
-	
-	private Container container;
-	
-	
-	public static void main(String[] args) 
-	{
-		try {
-			MapView frame = new MapView();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    private Container container;
+    private MapManager mapManager;
+    private GridView gridView;
+    public MapView() throws IOException
+    {
+        super("La dinde");
+        
+        setLayout(null);
+        setSize(1000,1000);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        BufferedImage myImage = ImageIO.read(new File("/Users/bastiensebire/Documents/Work/devoir-java/res/carte.png"));
+        setContentPane(new ImagePanel(myImage));
+        
+        mapManager = new MapManager(10);
+        gridView = new GridView(mapManager);
+        
+        container = this.getContentPane();
+		container.setLayout(new BorderLayout());
+		container.add(gridView,BorderLayout.CENTER);
+		container.repaint();
+        
+		setVisible(true);
+    }
 
-	/**
-	 * @param sea
-	 * @throws IOException 
-	 */
-	public MapView() throws IOException 
-	{	
-		
-		this.setTitle("My Super Chat");
-		this.setSize(1000, 650);
-		this.setResizable(false);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		
-		
-		//ImageIcon imageIcon = new ImageIcon(this.getResource("res/carte.png"));
-		
-		/*this.setLayout(new GridLayout(50, 50));
-		
-		for(int i = 0; i < 50 * 50; i++)
-		{
-			this.add(new JButton("Button 1"));
-		}
-		this.pack();*/
-		this.setVisible(true);
-		
-	}
+                   
+       
+  public static void main(String[] args) throws IOException{
+  
+      new MapView();
+  }
 }
