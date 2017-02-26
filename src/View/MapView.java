@@ -3,7 +3,9 @@ package View;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import client.Client;
 import model.MapManager;
+import server.Server;
 import utils.ImagePanel;
 
 import java.awt.BorderLayout;
@@ -23,12 +25,13 @@ public class MapView extends JFrame
     private Container container;
     private MapManager mapManager;
     private GridView gridView;
+    private Client currentClient;
     public MapView() throws IOException
     {
         super("La dinde");
         
         setLayout(null);
-        setSize(1000,1000);
+        setSize(745,735);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -45,11 +48,9 @@ public class MapView extends JFrame
         
 		setVisible(true);
     }
-
-                   
-       
-  public static void main(String[] args) throws IOException{
-  
-      new MapView();
-  }
+    
+    public static void main(String[] args) throws IOException
+    {
+    	MapView frame = new MapView();
+    }
 }

@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 
+import model.GridCase;
 import model.MapManager;
 import utils.ImagePanel;
 
@@ -38,13 +39,19 @@ public class GridView extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
             
-                JComponent jc = (JComponent)e.getSource();
+            	GridCase jc = (GridCase)e.getSource();
                 TransferHandler th = jc.getTransferHandler();
-                th.exportAsDrag(jc, e, TransferHandler.COPY);
+                
+                if(jc.getIcon() != null)
+                	th.exportAsDrag(jc, e, TransferHandler.COPY);
+                
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {
+            	GridCase jc = (GridCase)e.getSource();
+            	jc.setIcon(null);
+            }
 
             @Override
             public void mouseEntered(MouseEvent e) {}
@@ -58,18 +65,20 @@ public class GridView extends JPanel {
         
         for(int i = 0; i < mapManager.getSize() * mapManager.getSize(); i++)
         {
-        	JLabel gridCase = new JLabel();
+        	GridCase gridCase = new GridCase(i);
         	gridCase.setSize(200, 200);
         	gridCase.addMouseListener(ml);
+        	gridCase.setHorizontalTextPosition(JLabel.CENTER);
         	gridCase.setTransferHandler(new TransferHandler("icon"));
         	add(gridCase);
         }
         
-        JLabel pinCase = new JLabel();
+        GridCase pinCase = new GridCase(3);
         pinCase.setIcon(pinIcon);
         
         pinCase.setSize(200, 200);
         pinCase.addMouseListener(ml);
+        pinCase.setHorizontalTextPosition(JLabel.CENTER);
         pinCase.setTransferHandler(new TransferHandler("icon"));
         add(pinCase, 3);
         
