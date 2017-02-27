@@ -42,7 +42,7 @@ public class MapView extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // On met l'image de la carte en backbground
-        BufferedImage myImage = ImageIO.read(new File("/Users/bastiensebire/Documents/Work/devoir-java/res/carte.png"));
+        BufferedImage myImage = ImageIO.read(new File("/Users/Raphael/Desktop/Java/devoir-java/res/carte.png"));
         setContentPane(new ImagePanel(myImage));
         
         // Déclaration du MapManager et génération de la grille
