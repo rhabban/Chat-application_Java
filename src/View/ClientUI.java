@@ -25,9 +25,9 @@ public class ClientUI extends JFrame implements Observer{
     private JTextArea textArea;
     private JTextField inputTextField;
     private JButton sendButton;
-    private Client2 client;
+    private Client client;
 
-    public ClientUI(Client2 client) {
+    public ClientUI(Client client) {
         this.client = client;
         client.addObserver(this);
         createUI();
@@ -80,8 +80,14 @@ public class ClientUI extends JFrame implements Observer{
     }
     
     public static void main(String[] args) {
-        Client2 client = new Client2();
-
+        Client client = new Client();
+        
+        try {
+			new MapView();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
         JFrame frame = new ClientUI(client);
         frame.setTitle("Chat");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

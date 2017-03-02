@@ -55,7 +55,7 @@ public class Launcher extends JDialog implements ActionListener{
 		// TODO Auto-generated method stub
 		if (e.getSource() == valid) {
 			this.dispose();
-			new Client("localhost", 28000,name.getText());
+			//new Client("localhost", 28000,name.getText());
 		}
 		if (e.getSource() == quit) {
 			this.dispose();

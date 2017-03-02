@@ -37,7 +37,7 @@ public class ServerThread extends Thread {
 			try {
 				String input = streamIn.readUTF();
 				if(input != ""){
-					server.transmitMessage(input);
+					//server.transmitMessage(input);
 				}
 			}
 			catch(IOException e) { }
