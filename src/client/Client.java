@@ -1,5 +1,6 @@
 package client;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class Client {
 	
 	private Socket socket = null;
 	private DataInputStream  console = null;
+	private DataInputStream  streamIn = null;
 	private DataOutputStream streamOut = null;
 	private String name;
 
@@ -38,17 +40,22 @@ public class Client {
 		{  
 			e.printStackTrace();
 		}
-		String line = "";
-		while (!line.equals(".bye")) {  
+		String console_in = "";
+		while (!console_in.equals(".bye")) {  
 			try {  
-				line = console.readLine();
-				streamOut.writeUTF(this.name +": " + line);
+				console_in = console.readLine();
+				streamOut.writeUTF(this.name +": " + console_in);
 				streamOut.flush();
 			}
 			catch(IOException e)
 			{  
 				e.printStackTrace();
 			}
+			try {
+				String server_out = streamIn.readUTF();
+				System.out.println(server_out);
+			}
+			catch(IOException e) { }
 		}
 	}
 	
@@ -59,6 +66,7 @@ public class Client {
 	public void start() throws IOException {  
 		console   = new DataInputStream(System.in);
 		streamOut = new DataOutputStream(socket.getOutputStream());
+		streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 	}
 	
 	/**
@@ -81,5 +89,9 @@ public class Client {
 	
 	public static void main(String args[]) {  
 		new Launcher();
+	}
+	
+	public String getName(){
+		return name;
 	}
 }

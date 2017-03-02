@@ -14,6 +14,7 @@ public class ServerThread extends Thread {
 	private Server server = null;
 	private int id = -1;
 	private DataInputStream streamIn = null;
+	private DataOutputStream streamOut = null;
 
 	/**
 	 * Constructor of the class.
@@ -33,8 +34,11 @@ public class ServerThread extends Thread {
 		System.out.println("Client " + id + " connecté.");
 		while (true)
 		{  
-			try {  
-				System.out.println(streamIn.readUTF());
+			try {
+				String input = streamIn.readUTF();
+				if(input != ""){
+					server.transmitMessage(input);
+				}
 			}
 			catch(IOException e) { }
 		}
@@ -46,6 +50,7 @@ public class ServerThread extends Thread {
 	 */
 	public void open() throws IOException {  
 		streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+		streamOut = new DataOutputStream(socket.getOutputStream());
 	}
 	
 	/**
@@ -57,6 +62,16 @@ public class ServerThread extends Thread {
 			socket.close();
 		if (streamIn != null)  
 			streamIn.close();
+		if (streamOut != null)  
+			streamOut.close();
 	}
 	
+	/**
+	 * Send message to client
+	 * @throws IOException
+	 */
+	public void sendMessage(String message) throws IOException {
+		streamOut.writeUTF(message);
+		streamOut.flush();
+	}
 }
