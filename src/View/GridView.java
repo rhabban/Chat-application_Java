@@ -32,7 +32,7 @@ public class GridView extends JPanel {
 		this.mapManager = mapManager;
         
 		// Image du marqueur
-        ImageIcon pinIcon = new ImageIcon("/Users/Raphael/Desktop/Java/devoir-java/res/pin.png"); // load the image to a imageIcon
+        ImageIcon pinIcon = new ImageIcon(getClass().getResource("/res/pin.png")); // load the image to a imageIcon
         Image pin = pinIcon.getImage(); // transform it 
         Image newPin = pin.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
         pinIcon = new ImageIcon(newPin);  // transform it back

@@ -3,90 +3,44 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import client.ClientThread;
 
 /**
  * <b>Server</b> allow the communication between many clients. 
- * @author lenaic
+ * @author Corentin
  *
  */
-public class Server implements Runnable {  
-	private ServerSocket server = null;
-	private Thread thread = null;
-	private ServerThread client = null;
+public class Server {  
+	private static ServerSocket serverSocket = null;
+	private static Socket clientSocket = null;
+	
+	private static int port = 28000;
+	private static ArrayList<ClientThread> threads = new ArrayList<ClientThread>();
 
-	/**
-	 * Constructor of the class.
-	 * @param port : Port.
-	 */
-	public Server(int port) {  
-		try
-		{  
-			System.out.println("Connexion au port " + port + ", veuillez patienter  ...");
-			server = new ServerSocket(port);  
-			System.out.println("Serveur lancé: " + server);
-			start();
-		}
-		catch(IOException e)
-		{  
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Waiting for client.
-	 */
-	public void run() {  
-		while (thread != null) {  
-			try {  
-				System.out.println("En attente de clients ..."); 
-				this.addThread(server.accept());
-			}
-			catch(IOException e) {  
-				e.printStackTrace(); 
-			}
-		}
-	}
-	
-	/**
-	 * Add new client.
-	 * @param socket : socket.
-	 */
-	public void addThread(Socket socket) {  
-		System.out.println("Client accepté: " + socket);
-		client = new ServerThread(this, socket);
-		try {  
-			client.open();
-			client.start();
-		}
-		catch(IOException e)
-		{  
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Start a thread for a client.
-	 */
-	public void start() { 
-		if (thread == null) {  
-			thread = new Thread(this); 
-			thread.start();
-		}
-	}
-	
-	/**
-	 * Stop a thread for a client.
-	 */
-	public void stop() {
-		if (thread != null) {  
-			thread.stop(); 
-			thread = null;
-		}
-	}
-	
-	public static void main(String args[]){ 
-		Server server = null;
-		server = new Server(28000);
+	public static void main(String args[]) {
+
+	    try {
+	    	serverSocket = new ServerSocket(port);
+	    	System.out.println("Server started at localhost:"+port);
+	    } catch (IOException e) {
+	    	System.out.println(e);
+	    }
+
+	    /*
+	     * Create a new client socket when a client is connecting
+	     */
+	    while (true) {
+	      try {
+	        clientSocket = serverSocket.accept();
+	        ClientThread thread = new ClientThread(clientSocket, threads);
+	        thread.start();
+	        threads.add(thread);
+	      } catch (IOException e) {
+	        System.out.println(e);
+	      }
+	    }
 	}
 	
 }

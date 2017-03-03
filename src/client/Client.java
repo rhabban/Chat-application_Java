@@ -1,131 +1,68 @@
 package client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Observable;
 
-import View.Launcher;
 
 /**
  * <b>Client</b> allows a user to send messages to the server.
- * @author lenaic
- * @edited Raphael
+ * @author Corentin
+ *
  */
-public class Client {
+public class Client extends Observable {
+	private String name;
+	private float position_x;
+	private float position_y;
 	
 	private Socket socket = null;
-	private DataInputStream  console = null;
-	private DataOutputStream streamOut = null;
-	private String name;
-	private int x;
-	private int y;
-
-	/**
-	 * Constructor of the class.
-	 * @param serverName : Host.
-	 * @param serverPort : Port.
-	 * @param name : Name of the user.
-	 * @param x : the position of the user in the x axe
-	 * @param y : the position of the user in the y axe
-	 */
-	public Client(String serverName, int serverPort, String name, int x, int y) {
-		this.name = name;
-		this.x = x;
-		this.y = y;
-		System.out.println("Connexion en cours ...");
-		try
-		{  
-			socket = new Socket(serverName, serverPort);
-			System.out.println("Connecté: " + this.name);
-			this.start();
-		}
-		catch(IOException e)
-		{  
-			e.printStackTrace();
-		}
-		String line = "";
-		while (!line.equals(".bye")) {  
-			try {  
-				line = console.readLine();
-				streamOut.writeUTF(this.name +": " + line);
-				streamOut.flush();
-			}
-			catch(IOException e)
-			{  
-				e.printStackTrace();
-			}
-		}
-	}
+	private OutputStream outputStream;
 	
-	/**
-	 * Getter for the client name
-	 * @return name
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Getter for the x position
-	 * @return x
-	 */
-	public int getX() {
-		return x;
-	}
+	/** Create socket, and receiving thread */
+    public void InitSocket(String server, int port) throws IOException {
+        socket = new Socket(server, port);
+        outputStream = socket.getOutputStream();
 
-	/** 
-	 * Setter for the x position
-	 * @param x
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * * Getter for the y position
-	 * @return y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * Setter for the y position
-	 * @param y
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	/**
-	 * Start the communication with the server
-	 * @throws IOException
-	 */
-	public void start() throws IOException {  
-		console   = new DataInputStream(System.in);
-		streamOut = new DataOutputStream(socket.getOutputStream());
-	}
-	
-	/**
-	 * Stop the communication with the server
-	 */
-	public void stop() {  
-		try{  
-			if (console != null)  
-				console.close();
-			if (streamOut != null)  
-				streamOut.close();
-			if (socket != null)  
-				socket.close();
-		}
-		catch(IOException e)
-		{  
-			e.printStackTrace();
-		}
-	}
-	
-	public static void main(String args[]) {  
-		new Launcher();
-	}
+        Thread receivingThread = new Thread() {
+            public void run() {
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String line = null;
+                    while ((line = reader.readLine()) != null){
+                        notifyObservers(line);
+                    }
+                } catch (IOException e) {
+                    notifyObservers(e);
+                }
+            }
+        };
+        receivingThread.start();
+    }
+    
+    public void notifyObservers(Object arg) {
+        super.setChanged();
+        super.notifyObservers(arg);
+    }
+    
+    /** Send a line of text */
+    public void send(String text) {
+        try {
+            outputStream.write((text + "\r\n").getBytes());
+            outputStream.flush();
+        } catch (IOException e) {
+            notifyObservers(e);
+        }
+    }
+    
+    /** Close the socket */
+    public void close() {
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            notifyObservers(ex);
+        }
+    }
 }
