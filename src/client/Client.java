@@ -14,6 +14,7 @@ import java.util.Observable;
  *
  */
 public class Client extends Observable {
+	
 	private String name;
 	private float position_x;
 	private float position_y;
@@ -65,4 +66,35 @@ public class Client extends Observable {
             notifyObservers(ex);
         }
     }
+    
+    /** Getter for the name */
+	public String getName() {
+		return name;
+	}
+
+	/** Setter for the name */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/** Getter for the x position */
+	public float getX() {
+		return position_x;
+	}
+
+	/** Setter for the x position */
+	public void setX(float position_x) {
+		this.position_x = position_x;
+	}
+
+	/** Getter for the y position */
+	public float getY() {
+		return position_y;
+	}
+
+	/** Setter for the y position */
+	public void setY(float position_y) {
+		this.position_y = position_y;
+	}
+
 }

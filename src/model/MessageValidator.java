@@ -28,10 +28,10 @@ public class MessageValidator {
 	 * @return true if the two client can communicate or false if they can't
 	 */
 	public boolean isClientsNear() {
-		int x1 = this.client1.getX();
-		int y1 = this.client1.getY();
-		int x2 = this.client2.getX();
-		int y2 = this.client2.getY();
+		float x1 = this.client1.getX();
+		float y1 = this.client1.getY();
+		float x2 = this.client2.getX();
+		float y2 = this.client2.getY();
 		// Portée de communication entre deux clients
 		int scope = 4;
 		
@@ -82,9 +82,9 @@ public class MessageValidator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Client c1 = new Client("localhost", 28000,"client1",1,1);
-		Client c2 = new Client("localhost", 28000,"client2",1,2);
-		Client c3 = new Client("localhost", 28000,"client3",1,6);
+		Client c1 = new Client();
+		Client c2 = new Client();
+		Client c3 = new Client();
 		MessageValidator m1 = new MessageValidator(c1,c2);
 		MessageValidator m2 = new MessageValidator(c1,c3);
 		System.out.println("Test de proximité :");
