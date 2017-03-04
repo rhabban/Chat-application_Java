@@ -18,7 +18,7 @@ import model.Message;
 public class ClientThread extends Thread{
 	private String name = null;
 	
-	private DataInputStream streamIn = null;
+	private ObjectInputStream streamIn = null;
 	private PrintStream streamOut = null;
 	
 	private Socket clientSocket = null;
@@ -34,12 +34,13 @@ public class ClientThread extends Thread{
 
 		try {
 			InputStream is = clientSocket.getInputStream();
-			ObjectInputStream ois = new ObjectInputStream(is);
+			ObjectInputStream streamIn = new ObjectInputStream(is);
 			streamOut = new PrintStream(clientSocket.getOutputStream());
 			
 			streamOut.println("Entrer votre nom :");
-			Message msgName = (Message)ois.readObject();
+			Message msgName = (Message)streamIn.readObject();
 			name = msgName.text;
+			//streamIn.close();
 			
 						
 				for(ClientThread thread : threads){
@@ -58,7 +59,7 @@ public class ClientThread extends Thread{
 				} else {
 					sendMessage(line);
 				}*/
-				Message msg = (Message)ois.readObject();
+				Message msg = (Message)streamIn.readObject();
 				if(msg.text == "/bye")
 					disconnect();
 				else 
@@ -71,7 +72,7 @@ public class ClientThread extends Thread{
 	
 	public synchronized void sendMessage(Message message){
 		for(ClientThread thread : threads){
-			thread.streamOut.println("<" + message.clientName + "> " + message);
+			thread.streamOut.println("<" + message.clientName + "> " + message.text);
 		}
 	}
 	
