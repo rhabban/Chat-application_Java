@@ -31,9 +31,10 @@ public class MapView extends JFrame
     private MapManager mapManager;
     private GridView gridView;
     private Client currentClient;
-    public MapView() throws IOException
+    public MapView(Client currentClient) throws IOException
     {
         super("La dinde");
+        this.currentClient = currentClient;
         
         // Configuration de la JFrame
         setLayout(null);
@@ -47,7 +48,7 @@ public class MapView extends JFrame
         
         // Déclaration du MapManager et génération de la grille
         mapManager = new MapManager(10);
-        gridView = new GridView(mapManager);
+        gridView = new GridView(mapManager, currentClient);
         
         container = this.getContentPane();
 		container.setLayout(new BorderLayout());

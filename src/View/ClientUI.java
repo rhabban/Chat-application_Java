@@ -81,13 +81,7 @@ public class ClientUI extends JFrame implements Observer{
     
     public static void main(String[] args) {
         Client client = new Client();
-        
-        try {
-			new MapView();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
+ 
         JFrame frame = new ClientUI(client);
         frame.setTitle("Chat");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,6 +95,13 @@ public class ClientUI extends JFrame implements Observer{
         int port = 28000;
         try {  	
         	client.InitSocket(server,port);
+        	try {
+        		// Une fois le client créé, on génère le view MapView avec ce client en paramètre
+    			new MapView(client);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+        	
         } catch (IOException e) {
             System.out.println("Error while connecting to " + server + ":" + port);
             e.printStackTrace();
