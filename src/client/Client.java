@@ -60,6 +60,7 @@ public class Client extends Observable {
             //outputStream.flush();
         	Message message = new Message(text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
+        	objectOutputStream.flush();
         } catch (IOException e) {
             notifyObservers(e);
         }
