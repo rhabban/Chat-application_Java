@@ -1,11 +1,9 @@
 package client;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -94,7 +92,7 @@ public class ClientThread extends Thread{
 	public synchronized void sendMessage(Message message){
 		Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0);
 		clientsMsg.clients = getClients();
-		//System.out.println(clientsMsg.clients);
+
 		for(ClientThread thread : threads){
 			try {
 				thread.streamOut.writeObject(clientsMsg);
