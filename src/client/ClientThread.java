@@ -41,22 +41,38 @@ public class ClientThread extends Thread{
 			Message msgName = (Message)streamIn.readObject();
 			name = msgName.text;
 			
-						
-				for(ClientThread thread : threads){
-					if(thread != this){
-						thread.streamOut.println(name + " s'est connecté");
-					} else {
-						thread.streamOut.println("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée");
-					}			
+			for(ClientThread thread : threads){
+				if(thread != this){
+					thread.streamOut.println(name + " s'est connecté");
+				} else {
+					thread.streamOut.println("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée");
 				}			
+			}			
 				
 			/* Start the conversation. */
 			while (true) {
 				Message msg = (Message)streamIn.readObject();
-				if(msg.text == "/bye")
-					disconnect();
-				else 
-					sendMessage(msg);
+				switch(msg.type){
+					case Message._TEXT_:
+						sendMessage(msg);
+						break;
+						
+					case Message._DISCONNECT_:
+						disconnect();
+						break;
+						
+					default:
+						System.out.println(msg);
+						break;
+				}
+				/*if(msg.type == 0){
+					System.out.println(msg.text);
+					if(msg.text == "/bye"){
+						disconnect();
+					} else {
+						sendMessage(msg);
+					}
+				}*/
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); 
@@ -72,7 +88,7 @@ public class ClientThread extends Thread{
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.println(name + " s'est d�connect�");
+				thread.streamOut.println(name + " s'est déconnecté");
 				if(thread == this)
 					thread = null;
 			}

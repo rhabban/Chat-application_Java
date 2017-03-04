@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Observable;
 
 import model.Message;
@@ -16,7 +18,7 @@ import model.Message;
  * @author Corentin
  *
  */
-public class Client extends Observable {
+public class Client extends Observable implements Serializable {
 	
 	private String name;
 	private float position_x;
@@ -25,13 +27,13 @@ public class Client extends Observable {
 	private Socket socket = null;
 	private OutputStream outputStream;
 	private ObjectOutputStream objectOutputStream;
-	
+		
 	/** Create socket, and receiving thread */
     public void InitSocket(String server, int port) throws IOException {
         socket = new Socket(server, port);
         outputStream = socket.getOutputStream();
         objectOutputStream = new ObjectOutputStream(outputStream);
-
+        
         Thread receivingThread = new Thread() {
             public void run() {
                 try {
@@ -56,7 +58,7 @@ public class Client extends Observable {
     /** Send a line of text */
     public void send(String text) {
         try {
-        	Message message = new Message(text, this.name, this.position_x, this.position_y);
+        	Message message = new Message(0, text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
