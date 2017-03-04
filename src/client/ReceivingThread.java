@@ -35,7 +35,7 @@ public class ReceivingThread implements Runnable{
 				if(msg.type == Message._CLIENTS_){
 					this.client.setClientsData(msg.clients);
 					continue;
-				}
+				}				
 				this.client.notifyObservers("<"+msg.clientName+">"+msg.text);
         	}
 

@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import model.Message;
+import model.MessageValidator;
 
 /**
  * <b>ClientThread</b>
@@ -58,16 +59,24 @@ public class ClientThread extends Thread{
 				
 			/* Start the conversation. */
 			while (true) {
+				ArrayList<Message> messages = new ArrayList<>();
 				Message msg = (Message)streamIn.readObject();
+				messages.add(msg);
 				if(msg != null){
 					refreshClientData(msg.clientName, msg.posX, msg.posY);
 					switch(msg.type){
 						case Message._TEXT_:
-							sendMessage(msg);
+							Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0, getClients());
+							messages.add(clientsMsg);
+							sendMessages(messages);
 							break;
 							
 						case Message._DISCONNECT_:
 							disconnect();
+							break;
+							
+						case Message._POSITION_:
+							System.out.println(msg.clientName+" position updated");
 							break;
 							
 						default:
@@ -75,30 +84,25 @@ public class ClientThread extends Thread{
 							break;
 					}
 				}
-				/*if(msg.type == 0){
-					System.out.println(msg.text);
-					if(msg.text == "/bye"){
-						disconnect();
-					} else {
-						sendMessage(msg);
-					}
-				}*/
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); 
 		}
 	}
 	
-	public synchronized void sendMessage(Message message){
-		Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0);
-		clientsMsg.clients = getClients();
+	public synchronized void sendMessages(ArrayList<Message> messages){
 
 		for(ClientThread thread : threads){
-			try {
-				thread.streamOut.writeObject(clientsMsg);
-				thread.streamOut.writeObject(message);
-			} catch (IOException e) {
-				e.printStackTrace();
+			for(Message message : messages){
+				try {
+					MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
+					if(this == thread || val.isClientsNear() == true)
+						thread.streamOut.writeObject(message);
+					else
+						System.out.println("Hors de portée");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

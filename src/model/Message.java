@@ -14,6 +14,7 @@ public class Message implements Serializable {
 	public final static int _TEXT_ = 1;
 	public final static int _CLIENTS_ = 2;
 	public final static int _DISCONNECT_ = 3;
+	public final static int _POSITION_ = 4;
 	
 	public int type;
 	public String text;
@@ -32,7 +33,8 @@ public class Message implements Serializable {
 		this.posY = posY;
 	}
 	
-	public void setClient(ArrayList<Client> clients){
+	public Message(int type, String text, String clientName, int posX, int posY, ArrayList<Client> clients){
+		this(type, text, clientName, posX, posY);
 		this.clients = clients;
 	}
 	

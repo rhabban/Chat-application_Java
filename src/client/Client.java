@@ -65,10 +65,23 @@ public class Client extends Observable implements Serializable {
         }
     }
     
+    /** Send a line of text */
+    public void sendPosition() {
+        try {
+        	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y);
+        	objectOutputStream.writeObject(message);
+        	//objectOutputStream.flush();
+        } catch (IOException e) {
+            notifyObservers(e);
+        }
+    }
+    
     /** Close the socket */
     public void close() {
         try {
             socket.close();
+            Message message = new Message(Message._DISCONNECT_, "", this.name, 0, 0);
+        	objectOutputStream.writeObject(message);
         } catch (IOException ex) {
             notifyObservers(ex);
         }
@@ -85,7 +98,7 @@ public class Client extends Observable implements Serializable {
 	}
 
 	/** Getter for the x position */
-	public float getX() {
+	public int getX() {
 		return position_x;
 	}
 
@@ -95,7 +108,7 @@ public class Client extends Observable implements Serializable {
 	}
 
 	/** Getter for the y position */
-	public float getY() {
+	public int getY() {
 		return position_y;
 	}
 
