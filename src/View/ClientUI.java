@@ -20,6 +20,10 @@ import javax.swing.SwingUtilities;
 
 import client.*;
 
+/**
+ * <b>ClientThread</b>
+ * @author Corentin
+ */
 public class ClientUI extends JFrame implements Observer{
 
     private JTextArea textArea;
