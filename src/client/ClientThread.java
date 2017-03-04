@@ -38,35 +38,39 @@ public class ClientThread extends Thread{
 			ObjectInputStream streamIn = new ObjectInputStream(is);
 			streamOut = new ObjectOutputStream(clientSocket.getOutputStream());
 			
-			streamOut.writeObject(new Message("Quel est votre nom ?", "", 0, 0));
+			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0));
+			streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
 			name = msgName.text;
 			
+			//System.out.println(name);
 						
-				for(ClientThread thread : threads){
-					if(thread != this){
-						streamOut.writeObject(new Message(name + "s'est connecté !", "", 0, 0));
-					} else {
-						streamOut.writeObject(new Message("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", "", 0, 0));
-					}			
-				}			
-			}			
+			for(ClientThread thread : threads){
+				if(thread != this){
+					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", name, 0, 0));
+				} else {
+					streamOut.writeObject(new Message( Message._TEXT_, "Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", name, 0, 0));
+				}
+				//streamOut.flush();
+			}				
 				
 			/* Start the conversation. */
 			while (true) {
 				Message msg = (Message)streamIn.readObject();
-				switch(msg.type){
-					case Message._TEXT_:
-						sendMessage(msg);
-						break;
-						
-					case Message._DISCONNECT_:
-						disconnect();
-						break;
-						
-					default:
-						System.out.println(msg);
-						break;
+				if(msg != null){
+					switch(msg.type){
+						case Message._TEXT_:
+							sendMessage(msg);
+							break;
+							
+						case Message._DISCONNECT_:
+							disconnect();
+							break;
+							
+						default:
+							System.out.println("test default");
+							break;
+					}
 				}
 				/*if(msg.type == 0){
 					System.out.println(msg.text);
@@ -86,6 +90,7 @@ public class ClientThread extends Thread{
 		for(ClientThread thread : threads){
 			try {
 				thread.streamOut.writeObject(message);
+				//System.out.println(message);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -96,7 +101,7 @@ public class ClientThread extends Thread{
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.writeObject(new Message(name + "s'est déconnecté !", "", 0, 0));
+				thread.streamOut.writeObject(new Message(Message._TEXT_, name + "s'est déconnecté !", "", 0, 0));
 				if(thread == this)
 					thread = null;
 			}

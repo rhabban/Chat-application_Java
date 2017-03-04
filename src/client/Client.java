@@ -42,15 +42,15 @@ public class Client extends Observable implements Serializable {
                 	InputStream is = socket.getInputStream();
                 	ObjectInputStream streamIn = new ObjectInputStream(is);
                 	Message msg = null;
-					try {
+                	while(true){
 						msg = (Message)streamIn.readObject();
-						System.out.println(msg.text);
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                    notifyObservers(msg.text);
-                } catch (IOException e) {
+						if(msg.type == Message._NAME_){
+							setName(msg.clientName);
+						}
+						notifyObservers("<"+msg.clientName+">"+msg.text);
+                	}
+
+                } catch (IOException | ClassNotFoundException e) {
                     notifyObservers(e);
                 }
             }
@@ -66,7 +66,7 @@ public class Client extends Observable implements Serializable {
     /** Send a line of text */
     public void send(String text) {
         try {
-        	Message message = new Message(0, text, this.name, this.position_x, this.position_y);
+        	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
