@@ -22,7 +22,7 @@ import model.Message;
  */
 public class Client extends Observable implements Serializable {
 	
-	private String name;
+	private String name = "test";
 	private float position_x;
 	private float position_y;
 	
@@ -36,27 +36,7 @@ public class Client extends Observable implements Serializable {
         outputStream = socket.getOutputStream();
         objectOutputStream = new ObjectOutputStream(outputStream);
         
-        Thread receivingThread = new Thread() {
-            public void run() {
-                try {
-                	InputStream is = socket.getInputStream();
-                	ObjectInputStream streamIn = new ObjectInputStream(is);
-                	Message msg = null;
-                	while(true){
-						msg = (Message)streamIn.readObject();
-						System.out.println(msg.type);
-						if(msg.type == 0){
-							this.setName(msg.clientName);
-							System.out.println(this.getName());
-						}
-						notifyObservers("<"+this.getName()+">"+msg.text);
-                	}
-
-                } catch (IOException | ClassNotFoundException e) {
-                    notifyObservers(e);
-                }
-            }
-        };
+        Thread receivingThread = new Thread(new ReceivingThread(socket, this));
         receivingThread.start();
     }
     
@@ -67,6 +47,7 @@ public class Client extends Observable implements Serializable {
     
     /** Send a line of text */
     public void send(String text) {
+    	System.out.println(name);
         try {
         	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);

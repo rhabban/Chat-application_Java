@@ -2,6 +2,10 @@ package model;
 
 import java.io.Serializable;
 
+/**
+ * <b>ClientThread</b>
+ * @author Corentin
+ */
 public class Message implements Serializable {
 	public final static int _NAME_ = 0;
 	public final static int _TEXT_ = 1;
