@@ -56,8 +56,6 @@ public class Client extends Observable {
     /** Send a line of text */
     public void send(String text) {
         try {
-            //outputStream.write((text + "\r\n").getBytes());
-            //outputStream.flush();
         	Message message = new Message(text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
