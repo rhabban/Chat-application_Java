@@ -49,7 +49,7 @@ public class ClientThread extends Thread{
 				if(thread != this){
 					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", name, 0, 0));
 				} else {
-					streamOut.writeObject(new Message( Message._TEXT_, "Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", name, 0, 0));
+					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", name, 0, 0));
 				}
 				//streamOut.flush();
 			}				
