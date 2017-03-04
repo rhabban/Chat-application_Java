@@ -18,5 +18,10 @@ public class Message implements Serializable {
 		this.posX = posX;
 		this.posY = posY;
 	}
+
+	public String getClientName() {
+		return clientName;
+	}
+	
 	
 }

@@ -55,6 +55,6 @@ public class MapView extends JFrame
 		container.add(gridView,BorderLayout.CENTER);
 		container.repaint();
         
-		setVisible(true);
+		setVisible(false);
     }
 }
