@@ -44,10 +44,12 @@ public class Client extends Observable implements Serializable {
                 	Message msg = null;
                 	while(true){
 						msg = (Message)streamIn.readObject();
-						if(msg.type == Message._NAME_){
-							setName(msg.clientName);
+						System.out.println(msg.type);
+						if(msg.type == 0){
+							this.setName(msg.clientName);
+							System.out.println(this.getName());
 						}
-						notifyObservers("<"+msg.clientName+">"+msg.text);
+						notifyObservers("<"+this.getName()+">"+msg.text);
                 	}
 
                 } catch (IOException | ClassNotFoundException e) {
