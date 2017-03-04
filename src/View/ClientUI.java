@@ -81,9 +81,7 @@ public class ClientUI extends JFrame implements Observer{
     
     public static void main(String[] args) {
         Client client = new Client();
-        
-        
-        
+ 
         JFrame frame = new ClientUI(client);
         frame.setTitle("Chat");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
