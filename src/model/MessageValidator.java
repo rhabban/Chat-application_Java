@@ -28,10 +28,13 @@ public class MessageValidator {
 	 * @return true if the two client can communicate or false if they can't
 	 */
 	public boolean isClientsNear() {
-		float x1 = this.client1.getX();
-		float y1 = this.client1.getY();
-		float x2 = this.client2.getX();
-		float y2 = this.client2.getY();
+		int x1 = this.client1.getX();
+		int y1 = this.client1.getY();
+		
+		if (client2 == null)
+				return true;
+		int x2 = this.client2.getX();
+		int y2 = this.client2.getY();
 		// Portée de communication entre deux clients
 		int scope = 4;
 		

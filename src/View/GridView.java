@@ -33,7 +33,7 @@ public class GridView extends JPanel {
 	/** Draw borders for the client scope */
 	public void paintComponent(Graphics g){
 	    super.paintComponent(g);
-	    g.drawOval(0, -200, 400, 400);
+	    g.drawOval(-200, -200, 400, 400);
 	    //g.drawRect(0, -200, 400, 400);
 	    //g.drawRoundRect(000, -200, 400, 400,100,100);
 	    
@@ -81,6 +81,7 @@ public class GridView extends JPanel {
             	
             	// Évite de dupliquer les marqueurs
             	jc.setIcon(null);
+            	currentClient.sendPosition();
             }
 
             @Override
@@ -107,7 +108,7 @@ public class GridView extends JPanel {
         
         // On ajoute un marqueur pour le client
         // @TODO placer le marqueur d'un utilisateur venant de se connecter aléatoirement sur la grille
-        GridCase pinCase = new GridCase(3);
+        GridCase pinCase = new GridCase(0);
         
         // Calcul de la position initiale du client
     	currentClient.setX(pinCase.getPosition() % mapManager.getSize());
@@ -120,7 +121,7 @@ public class GridView extends JPanel {
         pinCase.setHorizontalTextPosition(JLabel.CENTER);
         pinCase.setTransferHandler(new TransferHandler("icon"));
         //pinCase.paintComponent(getGraphics());
-        add(pinCase, 3);
+        add(pinCase, 0);
         
 	}
 	public MapManager getMapManager() {
