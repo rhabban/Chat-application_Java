@@ -17,7 +17,11 @@ import model.Message;
  */
 
 public class ClientThread extends Thread{
-	private String name = null;
+	private String clientName = null;
+	private int clientPosX = 0;
+	private int clientPosY = 0;
+	
+	private Client clientData;
 	
 	private ObjectInputStream streamIn = null;
 	private ObjectOutputStream streamOut = null;
@@ -41,10 +45,10 @@ public class ClientThread extends Thread{
 			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0));
 			streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
-			String clientName = msgName.text;
+			clientName = msgName.text;
 			
-			//System.out.println(name);
-						
+			this.clientData = new Client(clientName, 0, 0);
+									
 			for(ClientThread thread : threads){
 				if(thread != this){
 					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0));
@@ -58,6 +62,7 @@ public class ClientThread extends Thread{
 			while (true) {
 				Message msg = (Message)streamIn.readObject();
 				if(msg != null){
+					refreshClientData(msg.clientName, msg.posX, msg.posY);
 					switch(msg.type){
 						case Message._TEXT_:
 							sendMessage(msg);
@@ -84,24 +89,45 @@ public class ClientThread extends Thread{
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); 
 		}
-  }
+	}
 	
 	public synchronized void sendMessage(Message message){
+		Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0);
+		clientsMsg.clients = getClients();
+		//System.out.println(clientsMsg.clients);
 		for(ClientThread thread : threads){
 			try {
+				thread.streamOut.writeObject(clientsMsg);
 				thread.streamOut.writeObject(message);
-				//System.out.println(message);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
+	public synchronized void refreshClientData(String name, int posX, int posY){
+		clientName = name;
+		clientPosX = posX;
+		clientPosY = posY;
+		this.clientData.setName(name);
+		this.clientData.setX(posX);
+		this.clientData.setY(posY);
+		
+		System.out.println(name+" is refreshing position");
+	}
+	
+	public ArrayList<Client> getClients(){
+		ArrayList<Client> clients = new ArrayList<>();
+		for(ClientThread thread : threads){
+			clients.add(thread.clientData);
+		}
+		return clients;
+	}
+	
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.writeObject(new Message(Message._TEXT_, name + "s'est déconnecté !", "", 0, 0));
+				thread.streamOut.writeObject(new Message(Message._TEXT_, clientName + "s'est déconnecté !", "", 0, 0));
 				if(thread == this)
 					thread = null;
 			}

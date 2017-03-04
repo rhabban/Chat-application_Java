@@ -1,6 +1,9 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import client.Client;
 
 /**
  * <b>ClientThread</b>
@@ -9,24 +12,28 @@ import java.io.Serializable;
 public class Message implements Serializable {
 	public final static int _NAME_ = 0;
 	public final static int _TEXT_ = 1;
-	public final static int _POSITION_ = 2;
+	public final static int _CLIENTS_ = 2;
 	public final static int _DISCONNECT_ = 3;
-
-	public String text;
 	
-	public String clientName;
 	public int type;
+	public String text;
+	public String clientName;
+	public int posX;
+	public int posY;
 	
-	public float posX;
-	public float posY;
+	public ArrayList<Client> clients;
 	
-	public Message(int type, String text, String clientName, float posX, float posY){
+	public Message(int type, String text, String clientName, int posX, int posY){
 		this.type = type;
 		this.text = text;
 		this.clientName = clientName;
 		
 		this.posX = posX;
 		this.posY = posY;
+	}
+	
+	public void setClient(ArrayList<Client> clients){
+		this.clients = clients;
 	}
 	
 	@Override

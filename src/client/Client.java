@@ -23,12 +23,25 @@ import model.Message;
 public class Client extends Observable implements Serializable {
 	
 	private String name = "test";
-	private float position_x;
-	private float position_y;
+	private int position_x;
+	private int position_y;
+	
+
+	private ArrayList<Client> clientsData = new ArrayList<>();
 	
 	private Socket socket = null;
 	private OutputStream outputStream;
 	private ObjectOutputStream objectOutputStream;
+	
+	public Client(){
+		super();
+	}
+	
+	public Client(String name, int position_x, int position_y){
+		this.name = name;
+		this.position_x = position_x;
+		this.position_y = position_y;
+	}
 		
 	/** Create socket, and receiving thread */
     public void InitSocket(String server, int port) throws IOException {
@@ -47,7 +60,6 @@ public class Client extends Observable implements Serializable {
     
     /** Send a line of text */
     public void send(String text) {
-    	System.out.println(name);
         try {
         	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
@@ -82,7 +94,7 @@ public class Client extends Observable implements Serializable {
 	}
 
 	/** Setter for the x position */
-	public void setX(float position_x) {
+	public void setX(int position_x) {
 		this.position_x = position_x;
 	}
 
@@ -92,8 +104,17 @@ public class Client extends Observable implements Serializable {
 	}
 
 	/** Setter for the y position */
-	public void setY(float position_y) {
+	public void setY(int position_y) {
 		this.position_y = position_y;
+	}
+	
+	public void setClientsData(ArrayList<Client> clients){
+		this.clientsData = clients;
+		System.out.println(clients);
+	}
+	
+	public ArrayList<Client> getClientsData(){
+		return clientsData;
 	}
 
 	@Override
