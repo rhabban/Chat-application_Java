@@ -2,9 +2,13 @@ package client;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import model.Message;
 
 /**
  * <b>ClientThread</b>
@@ -29,39 +33,45 @@ public class ClientThread extends Thread{
 		ArrayList<ClientThread> threads = this.threads;
 
 		try {
-			streamIn = new DataInputStream(clientSocket.getInputStream());
+			InputStream is = clientSocket.getInputStream();
+			ObjectInputStream ois = new ObjectInputStream(is);
 			streamOut = new PrintStream(clientSocket.getOutputStream());
 			
 			streamOut.println("Entrer votre nom :");
-			name = streamIn.readLine();
+			Message msgName = (Message)ois.readObject();
+			name = msgName.text;
 			
-							
+						
 				for(ClientThread thread : threads){
 					if(thread != this){
 						thread.streamOut.println(name + " s'est connecté");
 					} else {
 						thread.streamOut.println("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée");
 					}			
-				}
-			
-			
+				}			
+				
 			/* Start the conversation. */
 			while (true) {
-				String line = streamIn.readLine();
-				if (line.startsWith("/bye")) {
+				//String line = streamIn.readLine();
+				/*if (line.startsWith("/bye")) {
 					disconnect();
 				} else {
 					sendMessage(line);
-				}
-            }
-		} catch (IOException e) {
+				}*/
+				Message msg = (Message)ois.readObject();
+				if(msg.text == "/bye")
+					disconnect();
+				else 
+					sendMessage(msg);
+			}
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); 
 		}
   }
 	
-	public synchronized void sendMessage(String message){
+	public synchronized void sendMessage(Message message){
 		for(ClientThread thread : threads){
-			thread.streamOut.println("<" + name + "> " + message);
+			thread.streamOut.println("<" + message.clientName + "> " + message);
 		}
 	}
 	
