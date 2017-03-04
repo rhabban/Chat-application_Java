@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -44,6 +45,11 @@ public class ClientUI extends JFrame implements Observer{
         add(box, BorderLayout.SOUTH);
         inputTextField = new JTextField();
         sendButton = new JButton("Send");
+        sendButton.setBackground(new Color(59,89,182));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setFocusPainted(false);
+        inputTextField.setBackground(new Color(225,225,225));
+        inputTextField.setForeground(Color.BLACK);
         box.add(inputTextField);
         box.add(sendButton);
 

@@ -94,6 +94,7 @@ public class GridView extends JPanel {
         pinCase.addMouseListener(ml);
         pinCase.setHorizontalTextPosition(JLabel.CENTER);
         pinCase.setTransferHandler(new TransferHandler("icon"));
+        //pinCase.paintComponent(getGraphics());
         add(pinCase, 3);
         
 	}

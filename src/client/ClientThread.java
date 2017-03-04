@@ -32,15 +32,15 @@ public class ClientThread extends Thread{
 			streamIn = new DataInputStream(clientSocket.getInputStream());
 			streamOut = new PrintStream(clientSocket.getOutputStream());
 			
-			streamOut.println("Entrer votre nom :");
+			streamOut.println("Entrez votre nom :");
 			name = streamIn.readLine();
 			
 							
 				for(ClientThread thread : threads){
 					if(thread != this){
-						thread.streamOut.println(name + " s'est connecté");
+						thread.streamOut.println(name + " s'est connectï¿½");
 					} else {
-						thread.streamOut.println("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée");
+						thread.streamOut.println("Bonjour " + name + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nï¿½cessaire de se positionner ï¿½ leur portï¿½e");
 					}			
 				}
 			
@@ -68,7 +68,7 @@ public class ClientThread extends Thread{
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.println(name + " s'est déconnecté");
+				thread.streamOut.println(name + " s'est dï¿½connectï¿½");
 				if(thread == this)
 					thread = null;
 			}

@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.Graphics;
+
 import javax.swing.JLabel;
 
 /**
@@ -17,6 +19,12 @@ public class GridCase extends JLabel{
 
 	public GridCase() {
 		super();
+	}
+	
+	/** Draw borders for a case */
+	public void paintComponent(Graphics g){
+	    super.paintComponent(g);
+	    g.drawRect(0, 0, 200, 200);
 	}
 
 	@Override
