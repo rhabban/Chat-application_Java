@@ -2,7 +2,9 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -37,12 +39,18 @@ public class Client extends Observable implements Serializable {
         Thread receivingThread = new Thread() {
             public void run() {
                 try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String line = null;
-                    while ((line = reader.readLine()) != null){
-                        notifyObservers(line);
-                    }
-                } catch (IOException e) {
+                	InputStream is = socket.getInputStream();
+                	ObjectInputStream streamIn = new ObjectInputStream(is);
+                	Message msg = null;
+                	while(true){
+						msg = (Message)streamIn.readObject();
+						if(msg.type == Message._NAME_){
+							setName(msg.clientName);
+						}
+						notifyObservers("<"+msg.clientName+">"+msg.text);
+                	}
+
+                } catch (IOException | ClassNotFoundException e) {
                     notifyObservers(e);
                 }
             }
@@ -58,7 +66,7 @@ public class Client extends Observable implements Serializable {
     /** Send a line of text */
     public void send(String text) {
         try {
-        	Message message = new Message(0, text, this.name, this.position_x, this.position_y);
+        	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
