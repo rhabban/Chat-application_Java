@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 
+import client.Client;
 import model.GridCase;
 import model.MapManager;
 import utils.ImagePanel;
@@ -27,7 +28,7 @@ public class GridView extends JPanel {
 
 	private MapManager mapManager;
 
-	public GridView(MapManager mapManager) {
+	public GridView(MapManager mapManager, Client currentClient) {
 		super();
 		this.mapManager = mapManager;
         
@@ -52,12 +53,17 @@ public class GridView extends JPanel {
                 // Permet d'éviter de pouvoir déplacer une case vide
                 if(jc.getIcon() != null)
                 	th.exportAsDrag(jc, e, TransferHandler.COPY);
-                
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
             	GridCase jc = (GridCase)e.getSource();
+            	
+            	// Calcul de la nouvelle position du client
+            	currentClient.setX(jc.getPosition() % mapManager.getSize());
+            	currentClient.setY(jc.getPosition() / mapManager.getSize());
+            	
+            	System.out.println(currentClient);
             	
             	// Évite de dupliquer les marqueurs
             	jc.setIcon(null);
@@ -88,6 +94,11 @@ public class GridView extends JPanel {
         // On ajoute un marqueur pour le client
         // @TODO placer le marqueur d'un utilisateur venant de se connecter aléatoirement sur la grille
         GridCase pinCase = new GridCase(3);
+        
+        // Calcul de la position initiale du client
+    	currentClient.setX(pinCase.getPosition() % mapManager.getSize());
+    	currentClient.setY(pinCase.getPosition() / mapManager.getSize());
+    	
         pinCase.setIcon(pinIcon);
         
         pinCase.setSize(200, 200);
