@@ -105,4 +105,11 @@ public class Client extends Observable {
 		this.position_y = position_y;
 	}
 
+	@Override
+	public String toString() {
+		return "Client [name=" + name + ", position_x=" + position_x + ", position_y=" + position_y + "]";
+	}
+	
+	
+
 }
