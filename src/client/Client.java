@@ -3,9 +3,12 @@ package client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Observable;
+
+import model.Message;
 
 
 /**
@@ -21,11 +24,13 @@ public class Client extends Observable {
 	
 	private Socket socket = null;
 	private OutputStream outputStream;
+	private ObjectOutputStream objectOutputStream;
 	
 	/** Create socket, and receiving thread */
     public void InitSocket(String server, int port) throws IOException {
         socket = new Socket(server, port);
         outputStream = socket.getOutputStream();
+        objectOutputStream = new ObjectOutputStream(outputStream);
 
         Thread receivingThread = new Thread() {
             public void run() {
@@ -51,8 +56,11 @@ public class Client extends Observable {
     /** Send a line of text */
     public void send(String text) {
         try {
-            outputStream.write((text + "\r\n").getBytes());
-            outputStream.flush();
+            //outputStream.write((text + "\r\n").getBytes());
+            //outputStream.flush();
+        	Message message = new Message(text, this.name, this.position_x, this.position_y);
+        	objectOutputStream.writeObject(message);
+        	objectOutputStream.flush();
         } catch (IOException e) {
             notifyObservers(e);
         }
