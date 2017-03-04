@@ -2,7 +2,9 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -35,11 +37,17 @@ public class Client extends Observable {
         Thread receivingThread = new Thread() {
             public void run() {
                 try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String line = null;
-                    while ((line = reader.readLine()) != null){
-                        notifyObservers(line);
-                    }
+                	InputStream is = socket.getInputStream();
+                	ObjectInputStream streamIn = new ObjectInputStream(is);
+                	Message msg = null;
+					try {
+						msg = (Message)streamIn.readObject();
+						System.out.println(msg.text);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                    notifyObservers(msg.text);
                 } catch (IOException e) {
                     notifyObservers(e);
                 }
