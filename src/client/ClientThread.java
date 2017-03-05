@@ -50,6 +50,9 @@ public class ClientThread extends Thread{
 				} else {
 					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0, null));
 				}
+				ArrayList<Client> clients = getClients();
+				
+				
 				//streamOut.flush();
 			}				
 
@@ -86,10 +89,12 @@ public class ClientThread extends Thread{
 	}
 	
 	public synchronized void sendMessages(ArrayList<Message> messages){
+		ArrayList<Client> clients = getClients();
 
 		for(ClientThread thread : threads){
 			for(Message message : messages){
 				try {
+					message.clients = clients;
 					/*MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
 					if(this == thread || val.isClientsNear() == true)
 						thread.streamOut.writeObject(message);
@@ -108,7 +113,6 @@ public class ClientThread extends Thread{
 		messages.add(message);
 		sendMessages(messages);
 		
-		//TODO : Le message est sensé contenir la listes des clients lq cette méthode est appelée par refreshClientData
 		System.out.println("ClientThread.sendMessage :" + messages);
 	}
 	
@@ -117,14 +121,12 @@ public class ClientThread extends Thread{
 		this.clientData.setX(posX);
 		this.clientData.setY(posY);
 		
-		System.out.println("ClientThread.refreshClientData :"+this.clientData);
 		System.out.println(name+" position has been updated");
-		
+	}
+	
+	public synchronized Message createClientsMessage(){
 		ArrayList<Client> clients = getClients();
-
-		System.out.println("ClientThread.refreshClientData getClients() :"+ clients);
-		
-		sendMessage(new Message(Message._CLIENTS_, "", "", 0, 0, clients));
+		return (new Message(Message._CLIENTS_, clients));
 	}
 	
 	public ArrayList<Client> getClients(){
