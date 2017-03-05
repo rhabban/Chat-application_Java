@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import client.Client;
 
 /**
- * <b>ClientThread</b>
+ * <b>Message</b>
  * @author Corentin
  */
 public class Message implements Serializable {

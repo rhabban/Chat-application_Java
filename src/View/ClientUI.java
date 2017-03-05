@@ -28,7 +28,7 @@ import client.*;
 import utils.ImagePanel;
 
 /**
- * <b>ClientThread</b>
+ * <b>ClientUI</b>
  * @author Corentin
  */
 public class ClientUI extends JFrame implements Observer{
