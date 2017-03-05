@@ -37,7 +37,7 @@ public class ClientThread extends Thread{
 			ObjectInputStream streamIn = new ObjectInputStream(is);
 			streamOut = new ObjectOutputStream(clientSocket.getOutputStream());
 			
-			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0, getClients()));
+			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "BOT", 0, 0, getClients()));
 			
 			//streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
@@ -47,7 +47,7 @@ public class ClientThread extends Thread{
 									
 			for(ClientThread thread : threads){
 				if(thread != this){
-					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0, getClients()));
+					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", "BOT", 0, 0, getClients()));
 				} else {
 					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0, getClients()));
 				}
@@ -101,7 +101,8 @@ public class ClientThread extends Thread{
 						thread.streamOut.writeObject(message);
 					else
 						System.out.println("Hors de portée");*/
-					thread.streamOut.writeObject(message);
+					thread.streamOut.writeObject(message);					
+					System.out.println("ClientThread.sendMessages :" + message);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -113,8 +114,6 @@ public class ClientThread extends Thread{
 		ArrayList<Message> messages = new ArrayList<>();
 		messages.add(message);
 		sendMessages(messages);
-		
-		System.out.println("ClientThread.sendMessage :" + messages);
 	}
 	
 	public synchronized void refreshClientData(String name, int posX, int posY){
@@ -122,7 +121,7 @@ public class ClientThread extends Thread{
 		this.clientData.setX(posX);
 		this.clientData.setY(posY);
 		
-		System.out.println(name+" position has been updated");
+		System.out.println(name+" position updated" + clientData);
 	}
 	
 	public synchronized Message createClientsMessage(){
@@ -135,7 +134,6 @@ public class ClientThread extends Thread{
 		for(ClientThread thread : threads){
 			clients.add(thread.clientData);
 		}
-		System.out.println("ClientThread.getClients :"+clients);
 		return clients;
 	}
 	
