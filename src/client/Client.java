@@ -1,10 +1,6 @@
 package client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -23,12 +19,25 @@ import model.Message;
 public class Client extends Observable implements Serializable {
 	
 	private String name = "test";
-	private float position_x;
-	private float position_y;
+	private int position_x;
+	private int position_y;
+	
+
+	private ArrayList<Client> clientsData = new ArrayList<>();
 	
 	private Socket socket = null;
 	private OutputStream outputStream;
 	private ObjectOutputStream objectOutputStream;
+	
+	public Client(){
+		super();
+	}
+	
+	public Client(String name, int position_x, int position_y){
+		this.name = name;
+		this.position_x = position_x;
+		this.position_y = position_y;
+	}
 		
 	/** Create socket, and receiving thread */
     public void InitSocket(String server, int port) throws IOException {
@@ -47,9 +56,19 @@ public class Client extends Observable implements Serializable {
     
     /** Send a line of text */
     public void send(String text) {
-    	System.out.println(name);
         try {
         	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
+        	objectOutputStream.writeObject(message);
+        	//objectOutputStream.flush();
+        } catch (IOException e) {
+            notifyObservers(e);
+        }
+    }
+    
+    /** Send a line of text */
+    public void sendPosition() {
+        try {
+        	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
@@ -61,6 +80,8 @@ public class Client extends Observable implements Serializable {
     public void close() {
         try {
             socket.close();
+            Message message = new Message(Message._DISCONNECT_, "", this.name, 0, 0);
+        	objectOutputStream.writeObject(message);
         } catch (IOException ex) {
             notifyObservers(ex);
         }
@@ -77,23 +98,32 @@ public class Client extends Observable implements Serializable {
 	}
 
 	/** Getter for the x position */
-	public float getX() {
+	public int getX() {
 		return position_x;
 	}
 
 	/** Setter for the x position */
-	public void setX(float position_x) {
+	public void setX(int position_x) {
 		this.position_x = position_x;
 	}
 
 	/** Getter for the y position */
-	public float getY() {
+	public int getY() {
 		return position_y;
 	}
 
 	/** Setter for the y position */
-	public void setY(float position_y) {
+	public void setY(int position_y) {
 		this.position_y = position_y;
+	}
+	
+	public void setClientsData(ArrayList<Client> clients){
+		this.clientsData = clients;
+		System.out.println(clients);
+	}
+	
+	public ArrayList<Client> getClientsData(){
+		return clientsData;
 	}
 
 	@Override

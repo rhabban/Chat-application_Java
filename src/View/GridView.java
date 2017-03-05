@@ -1,10 +1,12 @@
 package View;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -27,10 +29,22 @@ import utils.ImagePanel;
 public class GridView extends JPanel {
 
 	private MapManager mapManager;
+	
+	/** Draw borders for the client scope */
+	public void paintComponent(Graphics g){
+	    super.paintComponent(g);
+	    g.drawOval(-200, -200, 400, 400);
+	    //g.drawRect(0, -200, 400, 400);
+	    //g.drawRoundRect(000, -200, 400, 400,100,100);
+	    
+	 // TODO :: La portée est affichée en brut ici, à changer dynamiquement !
+	}
 
 	public GridView(MapManager mapManager, Client currentClient) {
 		super();
 		this.mapManager = mapManager;
+		
+		
         
 		// Image du marqueur
         ImageIcon pinIcon = new ImageIcon(getClass().getResource("/res/pin.png")); // load the image to a imageIcon
@@ -67,6 +81,7 @@ public class GridView extends JPanel {
             	
             	// Évite de dupliquer les marqueurs
             	jc.setIcon(null);
+            	currentClient.sendPosition();
             }
 
             @Override
@@ -93,7 +108,7 @@ public class GridView extends JPanel {
         
         // On ajoute un marqueur pour le client
         // @TODO placer le marqueur d'un utilisateur venant de se connecter aléatoirement sur la grille
-        GridCase pinCase = new GridCase(3);
+        GridCase pinCase = new GridCase(0);
         
         // Calcul de la position initiale du client
     	currentClient.setX(pinCase.getPosition() % mapManager.getSize());
@@ -105,7 +120,8 @@ public class GridView extends JPanel {
         pinCase.addMouseListener(ml);
         pinCase.setHorizontalTextPosition(JLabel.CENTER);
         pinCase.setTransferHandler(new TransferHandler("icon"));
-        add(pinCase, 3);
+        //pinCase.paintComponent(getGraphics());
+        add(pinCase, 0);
         
 	}
 	public MapManager getMapManager() {

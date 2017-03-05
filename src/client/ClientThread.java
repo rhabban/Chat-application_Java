@@ -1,15 +1,14 @@
 package client;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import model.Message;
+import model.MessageValidator;
 
 /**
  * <b>ClientThread</b>
@@ -17,7 +16,11 @@ import model.Message;
  */
 
 public class ClientThread extends Thread{
-	private String name = null;
+	private String clientName = null;
+	private int clientPosX = 0;
+	private int clientPosY = 0;
+	
+	private Client clientData;
 	
 	private ObjectInputStream streamIn = null;
 	private ObjectOutputStream streamOut = null;
@@ -41,10 +44,10 @@ public class ClientThread extends Thread{
 			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0));
 			streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
-			String clientName = msgName.text;
+			clientName = msgName.text;
 			
-			//System.out.println(name);
-						
+			this.clientData = new Client(clientName, 0, 0);
+									
 			for(ClientThread thread : threads){
 				if(thread != this){
 					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0));
@@ -53,18 +56,27 @@ public class ClientThread extends Thread{
 				}
 				//streamOut.flush();
 			}				
-				
+
 			/* Start the conversation. */
 			while (true) {
+				ArrayList<Message> messages = new ArrayList<>();
 				Message msg = (Message)streamIn.readObject();
+				messages.add(msg);
 				if(msg != null){
+					refreshClientData(msg.clientName, msg.posX, msg.posY);
 					switch(msg.type){
 						case Message._TEXT_:
-							sendMessage(msg);
+							Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0, getClients());
+							messages.add(clientsMsg);
+							sendMessages(messages);
 							break;
 							
 						case Message._DISCONNECT_:
 							disconnect();
+							break;
+							
+						case Message._POSITION_:
+							System.out.println(msg.clientName+" position updated");
 							break;
 							
 						default:
@@ -72,36 +84,52 @@ public class ClientThread extends Thread{
 							break;
 					}
 				}
-				/*if(msg.type == 0){
-					System.out.println(msg.text);
-					if(msg.text == "/bye"){
-						disconnect();
-					} else {
-						sendMessage(msg);
-					}
-				}*/
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); 
 		}
-  }
+	}
 	
-	public synchronized void sendMessage(Message message){
+	public synchronized void sendMessages(ArrayList<Message> messages){
+
 		for(ClientThread thread : threads){
-			try {
-				thread.streamOut.writeObject(message);
-				//System.out.println(message);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			for(Message message : messages){
+				try {
+					MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
+					if(this == thread || val.isClientsNear() == true)
+						thread.streamOut.writeObject(message);
+					else
+						System.out.println("Hors de portée");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+	}
+	
+	public synchronized void refreshClientData(String name, int posX, int posY){
+		clientName = name;
+		clientPosX = posX;
+		clientPosY = posY;
+		this.clientData.setName(name);
+		this.clientData.setX(posX);
+		this.clientData.setY(posY);
+		
+		System.out.println(name+" is refreshing position");
+	}
+	
+	public ArrayList<Client> getClients(){
+		ArrayList<Client> clients = new ArrayList<>();
+		for(ClientThread thread : threads){
+			clients.add(thread.clientData);
+		}
+		return clients;
 	}
 	
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.writeObject(new Message(Message._TEXT_, name + "s'est déconnecté !", "", 0, 0));
+				thread.streamOut.writeObject(new Message(Message._TEXT_, clientName + "s'est déconnecté !", "", 0, 0));
 				if(thread == this)
 					thread = null;
 			}

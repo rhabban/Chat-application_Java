@@ -29,10 +29,13 @@ public class ReceivingThread implements Runnable{
         	Message msg = null;
         	while(true){
 				msg = (Message)streamIn.readObject();
-				System.out.println(msg.type);
-				if(msg.type == 0){
+				if(msg.type == Message._NAME_){
 					this.client.setName(msg.clientName);
 				}
+				if(msg.type == Message._CLIENTS_){
+					this.client.setClientsData(msg.clients);
+					continue;
+				}				
 				this.client.notifyObservers("<"+msg.clientName+">"+msg.text);
         	}
 
