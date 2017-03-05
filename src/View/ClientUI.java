@@ -66,6 +66,7 @@ public class ClientUI extends JFrame implements Observer{
         add(box, BorderLayout.SOUTH);
         add(new JScrollPane(boxUsers), BorderLayout.EAST);
         inputTextField = new JTextField();
+
         /*
         // TODO :: Afficher la liste des clients connectés dynamiquement
         for (int i=0;i<5;i++) {
@@ -114,6 +115,8 @@ public class ClientUI extends JFrame implements Observer{
                 textArea.append(arg.toString());
                 textArea.append("\n");
                 boxUsers.removeAll();
+                JLabel titre = new JLabel("Liste des utilisateurs connectés : ");
+                boxUsers.add(titre);
                 ArrayList<Client> clientsList = client.getClientsData();
                 for (Client c : clientsList) {
                 	if(c != null){
