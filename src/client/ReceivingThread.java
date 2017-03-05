@@ -31,6 +31,7 @@ public class ReceivingThread implements Runnable{
 				msg = (Message)streamIn.readObject();
 				if(msg.type == Message._NAME_){
 					this.client.setName(msg.clientName);
+					msg.clientName = "BOT";
 				}
 				this.client.setClientsData(msg.clients);
 				this.client.notifyObservers("<"+msg.clientName+">"+msg.text);

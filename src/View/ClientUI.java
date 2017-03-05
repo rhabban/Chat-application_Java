@@ -120,7 +120,7 @@ public class ClientUI extends JFrame implements Observer{
                 		boxUsers.add(userName);
                 	}
                 }
-                System.out.println(clientsList);
+                System.out.println("ClientUI update : " + clientsList);
             }
         });
     }
