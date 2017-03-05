@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import client.Client;
 
 /**
- * <b>ClientThread</b>
+ * <b>Message</b>
  * @author Corentin
  */
 public class Message implements Serializable {
@@ -32,6 +32,11 @@ public class Message implements Serializable {
 		this.posX = posX;
 		this.posY = posY;
 	}
+
+	public String getClientName() {
+		return clientName;
+	}
+	
 	
 	public Message(int type, String text, String clientName, int posX, int posY, ArrayList<Client> clients){
 		this(type, text, clientName, posX, posY);

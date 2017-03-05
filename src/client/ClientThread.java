@@ -56,7 +56,7 @@ public class ClientThread extends Thread{
 				}
 				//streamOut.flush();
 			}				
-				
+
 			/* Start the conversation. */
 			while (true) {
 				ArrayList<Message> messages = new ArrayList<>();
