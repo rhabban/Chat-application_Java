@@ -11,12 +11,11 @@ import model.Message;
 import model.MessageValidator;
 
 /**
- * <b>ClientThread</b>
+ * <b>ClientThread</b> is the thread that communicates with Server and Client. It receives Message from Client and sends Message to Client.
  * @author Corentin
  */
-
 public class ClientThread extends Thread{	
-	// Client Data (Name, posX, posY) saved in thread, not real Client instanced in ClientUI
+	// Client Data (Name, posX, posY) saved in thread, not real Client instanced in ClientUI.
 	private Client clientData;
 	private ObjectInputStream streamIn = null;
 	private ObjectOutputStream streamOut = null;
@@ -30,6 +29,7 @@ public class ClientThread extends Thread{
     }
 
 	public synchronized void run() {
+		// Each ClientThread knows its ClientThread's pair.
 		ArrayList<ClientThread> threads = this.threads;
 
 		try {
@@ -37,14 +37,13 @@ public class ClientThread extends Thread{
 			ObjectInputStream streamIn = new ObjectInputStream(is);
 			streamOut = new ObjectOutputStream(clientSocket.getOutputStream());
 			
+			// Ask to Client it's username and save him into clientData
 			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "BOT", 0, 0, getClients()));
-			
-			//streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
 			String clientName = msgName.text;
 			
 			this.clientData = new Client(clientName, 0, 0);
-									
+			
 			for(ClientThread thread : threads){
 				if(thread != this){
 					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0, getClients()));
@@ -52,9 +51,6 @@ public class ClientThread extends Thread{
 					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0, getClients()));
 				}
 				ArrayList<Client> clients = getClients();
-				
-				
-				//streamOut.flush();
 			}				
 
 			/* Start the conversation. */
@@ -65,8 +61,6 @@ public class ClientThread extends Thread{
 				if(msg != null){
 					switch(msg.type){
 						case Message._TEXT_:
-							/*Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0, getClients());
-							messages.add(clientsMsg);*/
 							sendMessages(messages);
 							break;
 							
@@ -89,12 +83,14 @@ public class ClientThread extends Thread{
 		}
 	}
 	
+	/** This method allows threads to send Messages to every Client **/
 	public synchronized void sendMessages(ArrayList<Message> messages){
 		ArrayList<Client> clients = getClients();
 
 		for(ClientThread thread : threads){
 			for(Message message : messages){
 				try {
+					// All clients connected to server are saved into Message to allow Client to know them each other.
 					message.clients = clients;
 					/*MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
 					if(this == thread || val.isClientsNear() == true)
@@ -116,6 +112,7 @@ public class ClientThread extends Thread{
 		sendMessages(messages);
 	}
 	
+	/** Save Client new position **/
 	public synchronized void refreshClientData(String name, int posX, int posY){
 		this.clientData.setName(name);
 		this.clientData.setX(posX);
@@ -129,6 +126,7 @@ public class ClientThread extends Thread{
 		return (new Message(Message._CLIENTS_, clients));
 	}
 	
+	/** Return the list of Thread's Clients **/
 	public ArrayList<Client> getClients(){
 		ArrayList<Client> clients = new ArrayList<>();
 		for(ClientThread thread : threads){

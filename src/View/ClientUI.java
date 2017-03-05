@@ -10,16 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -29,7 +26,7 @@ import client.*;
 import utils.ImagePanel;
 
 /**
- * <b>ClientUI</b>
+ * <b>ClientUI</b> is the user interface. Each ClientUI create and observe a new Client. 
  * @author Corentin
  */
 public class ClientUI extends JFrame implements Observer{
@@ -42,6 +39,7 @@ public class ClientUI extends JFrame implements Observer{
 
     public ClientUI(Client client) throws IOException {
         this.client = client;
+        // Client is observed by ClientUI
         client.addObserver(this);
         createUI();
     }
@@ -66,14 +64,6 @@ public class ClientUI extends JFrame implements Observer{
         add(box, BorderLayout.SOUTH);
         add(new JScrollPane(boxUsers), BorderLayout.EAST);
         inputTextField = new JTextField();
-        /*
-        // TODO :: Afficher la liste des clients connectés dynamiquement
-        for (int i=0;i<5;i++) {
-        	JLabel userName = new JLabel("user"+i);
-        	boxUsers.add(userName);
-        }*/
-        
-        //JTextArea usersList = new JTextArea("users List");
         sendButton = new JButton("Send");
         sendButton.setBackground(new Color(59,89,182));
         sendButton.setForeground(Color.WHITE);
@@ -82,9 +72,8 @@ public class ClientUI extends JFrame implements Observer{
         inputTextField.setForeground(Color.BLACK);
         box.add(inputTextField);
         box.add(sendButton);
-        //boxUsers.add(usersList);
 
-        // Action for the inputTextField and the goButton
+        // Send text line message to client
         ActionListener sendListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String str = inputTextField.getText();
