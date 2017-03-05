@@ -108,12 +108,10 @@ public class ClientUI extends JFrame implements Observer{
     public void update(Observable o, Object arg) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-            	//System.out.println(arg);
                 textArea.append(arg.toString());
                 textArea.append("\n");
             }
         });
-        //System.out.println(arg);
     }
     
     public static void main(String[] args) throws IOException {

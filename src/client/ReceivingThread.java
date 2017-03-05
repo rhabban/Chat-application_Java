@@ -33,6 +33,7 @@ public class ReceivingThread implements Runnable{
 					this.client.setName(msg.clientName);
 				}
 				if(msg.type == Message._CLIENTS_){
+					System.out.println("ReceivingThread.run : "+msg);
 					this.client.setClientsData(msg.clients);
 					continue;
 				}				

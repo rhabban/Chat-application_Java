@@ -69,6 +69,7 @@ public class Client extends Observable implements Serializable {
     public void sendPosition() {
         try {
         	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y);
+        	System.out.println("Client.SendPosition :" +message);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
@@ -119,7 +120,7 @@ public class Client extends Observable implements Serializable {
 	
 	public void setClientsData(ArrayList<Client> clients){
 		this.clientsData = clients;
-		System.out.println(clients);
+		//System.out.println(clients);
 	}
 	
 	public ArrayList<Client> getClientsData(){

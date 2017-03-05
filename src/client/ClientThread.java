@@ -15,13 +15,9 @@ import model.MessageValidator;
  * @author Corentin
  */
 
-public class ClientThread extends Thread{
-	private String clientName = null;
-	private int clientPosX = 0;
-	private int clientPosY = 0;
-	
+public class ClientThread extends Thread{	
+	// Client Data (Name, posX, posY) saved in thread, not real Client instanced in ClientUI
 	private Client clientData;
-	
 	private ObjectInputStream streamIn = null;
 	private ObjectOutputStream streamOut = null;
 	
@@ -44,7 +40,7 @@ public class ClientThread extends Thread{
 			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0));
 			streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
-			clientName = msgName.text;
+			String clientName = msgName.text;
 			
 			this.clientData = new Client(clientName, 0, 0);
 									
@@ -63,11 +59,10 @@ public class ClientThread extends Thread{
 				Message msg = (Message)streamIn.readObject();
 				messages.add(msg);
 				if(msg != null){
-					refreshClientData(msg.clientName, msg.posX, msg.posY);
 					switch(msg.type){
 						case Message._TEXT_:
-							Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0, getClients());
-							messages.add(clientsMsg);
+							/*Message clientsMsg = new Message(Message._CLIENTS_, "", "", 0, 0, getClients());
+							messages.add(clientsMsg);*/
 							sendMessages(messages);
 							break;
 							
@@ -76,7 +71,7 @@ public class ClientThread extends Thread{
 							break;
 							
 						case Message._POSITION_:
-							System.out.println(msg.clientName+" position updated");
+							refreshClientData(msg.clientName, msg.posX, msg.posY);
 							break;
 							
 						default:
@@ -95,11 +90,12 @@ public class ClientThread extends Thread{
 		for(ClientThread thread : threads){
 			for(Message message : messages){
 				try {
-					MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
+					/*MessageValidator val = new MessageValidator(this.clientData, thread.clientData);
 					if(this == thread || val.isClientsNear() == true)
 						thread.streamOut.writeObject(message);
 					else
-						System.out.println("Hors de portée");
+						System.out.println("Hors de portée");*/
+					thread.streamOut.writeObject(message);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -107,15 +103,24 @@ public class ClientThread extends Thread{
 		}
 	}
 	
+	public synchronized void sendMessage(Message message){
+		ArrayList<Message> messages = new ArrayList<>();
+		messages.add(message);
+		sendMessages(messages);
+		
+		//TODO : Le message est sensé contenir la listes des clients lq cette méthode est appelée par refreshClientData
+		System.out.println("ClientThread.sendMessage :" + messages);
+	}
+	
 	public synchronized void refreshClientData(String name, int posX, int posY){
-		clientName = name;
-		clientPosX = posX;
-		clientPosY = posY;
 		this.clientData.setName(name);
 		this.clientData.setX(posX);
 		this.clientData.setY(posY);
 		
-		System.out.println(name+" is refreshing position");
+		System.out.println("ClientThread.refreshClientData :"+this.clientData);
+		System.out.println(name+" position has been updated");
+		
+		sendMessage(new Message(Message._CLIENTS_, "", "", 0, 0, getClients()));
 	}
 	
 	public ArrayList<Client> getClients(){
@@ -123,13 +128,14 @@ public class ClientThread extends Thread{
 		for(ClientThread thread : threads){
 			clients.add(thread.clientData);
 		}
+		System.out.println("ClientThread.getClients :"+clients);
 		return clients;
 	}
 	
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.writeObject(new Message(Message._TEXT_, clientName + "s'est déconnecté !", "", 0, 0));
+				thread.streamOut.writeObject(new Message(Message._TEXT_, clientData.getName() + "s'est déconnecté !", "", 0, 0));
 				if(thread == this)
 					thread = null;
 			}

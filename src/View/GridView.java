@@ -76,12 +76,12 @@ public class GridView extends JPanel {
             	// Calcul de la nouvelle position du client
             	currentClient.setX(jc.getPosition() % mapManager.getSize());
             	currentClient.setY(jc.getPosition() / mapManager.getSize());
+            	currentClient.sendPosition();
             	
-            	System.out.println(currentClient);
+            	//System.out.println(currentClient);
             	
             	// Évite de dupliquer les marqueurs
             	jc.setIcon(null);
-            	currentClient.sendPosition();
             }
 
             @Override
