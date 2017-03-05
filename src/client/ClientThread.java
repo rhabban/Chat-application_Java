@@ -47,7 +47,7 @@ public class ClientThread extends Thread{
 									
 			for(ClientThread thread : threads){
 				if(thread != this){
-					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", "BOT", 0, 0, getClients()));
+					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0, getClients()));
 				} else {
 					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0, getClients()));
 				}
