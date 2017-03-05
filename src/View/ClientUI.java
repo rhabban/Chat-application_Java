@@ -1,5 +1,6 @@
 package View;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -49,7 +50,6 @@ public class ClientUI extends JFrame implements Observer{
      * @throws IOException */
     private void createUI() throws IOException {
     	
-    	// TODO :: supprimer la mapView de la Frame à part et l'intégrer à ClientUI
     	JFrame map = new MapView(this.client);
     	ImagePanel mapPanel = (ImagePanel) map.getContentPane();
     	mapPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -66,10 +66,13 @@ public class ClientUI extends JFrame implements Observer{
         add(box, BorderLayout.SOUTH);
         add(new JScrollPane(boxUsers), BorderLayout.EAST);
         inputTextField = new JTextField();
-        for(int i=0; i<5;i++){
+
+        // TODO :: Afficher la liste des clients connectés dynamiquement
+        for (int i=0;i<5;i++) {
         	JLabel userName = new JLabel("user"+i);
         	boxUsers.add(userName);
         }
+        
         //JTextArea usersList = new JTextArea("users List");
         sendButton = new JButton("Send");
         sendButton.setBackground(new Color(59,89,182));
@@ -110,6 +113,12 @@ public class ClientUI extends JFrame implements Observer{
             public void run() {
                 textArea.append(arg.toString());
                 textArea.append("\n");
+                ArrayList<Client> clientsList = client.getClientsData();
+                for (Client c : clientsList) {
+                	JLabel userName = new JLabel(c.getName());
+                	boxUsers.add(userName);
+                }
+                System.out.println(clientsList);
             }
         });
     }
