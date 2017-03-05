@@ -66,12 +66,12 @@ public class ClientUI extends JFrame implements Observer{
         add(box, BorderLayout.SOUTH);
         add(new JScrollPane(boxUsers), BorderLayout.EAST);
         inputTextField = new JTextField();
-
+        /*
         // TODO :: Afficher la liste des clients connectés dynamiquement
         for (int i=0;i<5;i++) {
         	JLabel userName = new JLabel("user"+i);
         	boxUsers.add(userName);
-        }
+        }*/
         
         //JTextArea usersList = new JTextArea("users List");
         sendButton = new JButton("Send");
@@ -113,6 +113,7 @@ public class ClientUI extends JFrame implements Observer{
             public void run() {
                 textArea.append(arg.toString());
                 textArea.append("\n");
+                boxUsers.removeAll();
                 ArrayList<Client> clientsList = client.getClientsData();
                 for (Client c : clientsList) {
                 	if(c != null){
