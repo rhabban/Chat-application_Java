@@ -115,8 +115,10 @@ public class ClientUI extends JFrame implements Observer{
                 textArea.append("\n");
                 ArrayList<Client> clientsList = client.getClientsData();
                 for (Client c : clientsList) {
-                	JLabel userName = new JLabel(c.getName());
-                	boxUsers.add(userName);
+                	if(c != null){
+                		JLabel userName = new JLabel(c.getName());
+                		boxUsers.add(userName);
+                	}
                 }
                 System.out.println(clientsList);
             }
