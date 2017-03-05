@@ -12,19 +12,19 @@ import model.Message;
 
 
 /**
- * <b>Client</b> allows a user to send messages to the server.
+ * <b>Client</b> allows a user to send messages to the server. This class communicates with ClientUI (Obs) and ClientThread with ObjectStream
+ * This is a serializable class that allow it to be send in ObjectStream (only with position and name)
  * @author Corentin
- *
  */
 public class Client extends Observable implements Serializable {
 	
-	private String name = "test";
+	// Serializabled attributes
+	private String name;
 	private int position_x;
 	private int position_y;
+	private ArrayList<Client> clientsData = new ArrayList<>(); // Client knows its Client's pair.
 	
-
-	private ArrayList<Client> clientsData = new ArrayList<>();
-	
+	// Sockets and streams attributes
 	private Socket socket = null;
 	private OutputStream outputStream;
 	private ObjectOutputStream objectOutputStream;
@@ -33,6 +33,7 @@ public class Client extends Observable implements Serializable {
 		super();
 	}
 	
+	/** This constructor is used to send this into socket **/
 	public Client(String name, int position_x, int position_y){
 		this.name = name;
 		this.position_x = position_x;
@@ -49,29 +50,28 @@ public class Client extends Observable implements Serializable {
         receivingThread.start();
     }
     
+    /** ClientUI is updating with arg by this method **/
     public void notifyObservers(Object arg) {
         super.setChanged();
         super.notifyObservers(arg);
     }
     
-    /** Send a line of text */
+    /** Send a text Message to ClientThread */
     public void send(String text) {
         try {
         	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y, null);
         	objectOutputStream.writeObject(message);
-        	//objectOutputStream.flush();
         } catch (IOException e) {
             notifyObservers(e);
         }
     }
     
-    /** Send a line of text */
+    /** Send a position Message to ClientThread */
     public void sendPosition() {
         try {
         	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y, null);
         	System.out.println("Client.SendPosition :" +message);
         	objectOutputStream.writeObject(message);
-        	//objectOutputStream.flush();
         } catch (IOException e) {
             notifyObservers(e);
         }
@@ -117,10 +117,9 @@ public class Client extends Observable implements Serializable {
 	public void setY(int position_y) {
 		this.position_y = position_y;
 	}
-	
+
 	public void setClientsData(ArrayList<Client> clients){
 		this.clientsData = clients;
-		//System.out.println(clients);
 	}
 	
 	public ArrayList<Client> getClientsData(){
@@ -129,9 +128,8 @@ public class Client extends Observable implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Client [name=" + name + ", position_x=" + position_x + ", position_y=" + position_y + "]";
+		return "Client [name=" + name + ", position_x=" + position_x + ", position_y=" + position_y + ", clientsData="
+				+ clientsData + ", socket=" + socket + ", outputStream=" + outputStream + ", objectOutputStream="
+				+ objectOutputStream + "]";
 	}
-	
-	
-
 }

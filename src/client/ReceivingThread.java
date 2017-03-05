@@ -8,7 +8,7 @@ import java.net.Socket;
 import model.Message;
 
 /**
- * <b>ReceivingThread</b>
+ * <b>ReceivingThread</b> allows Client to listen ClientThread
  * @author Corentin
  */
 public class ReceivingThread implements Runnable{
@@ -26,6 +26,7 @@ public class ReceivingThread implements Runnable{
 		try {
         	InputStream is = socket.getInputStream();
         	ObjectInputStream streamIn = new ObjectInputStream(is);
+        	
         	Message msg = null;
         	while(true){
 				msg = (Message)streamIn.readObject();
@@ -33,7 +34,9 @@ public class ReceivingThread implements Runnable{
 					this.client.setName(msg.clientName);
 					msg.clientName = "BOT";
 				}
+				// Set Clients array to Client
 				this.client.setClientsData(msg.clients);
+				// Notify all observers that ClientThread just send a Message
 				this.client.notifyObservers("<"+msg.clientName+">"+msg.text);
 				System.out.println("ReceivingThread.run Message :" + msg);
         	}

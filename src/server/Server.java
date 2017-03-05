@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import client.ClientThread;
 
 /**
- * <b>Server</b> allow the communication between many clients. 
+ * <b>Server</b> allow the communication between many ClientThread. 
  * @author Corentin
  *
  */

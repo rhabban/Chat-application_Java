@@ -61,6 +61,8 @@ public class GridView extends JPanel {
             
             	GridCase jc = (GridCase)e.getSource();
                 TransferHandler th = jc.getTransferHandler();
+
+            	currentClient.sendPosition();
                 
                 // Permet d'éviter de pouvoir déplacer une case vide
                 if(jc.getIcon() != null)
