@@ -24,29 +24,19 @@ public class Message implements Serializable {
 	
 	public ArrayList<Client> clients;
 	
-	public Message(int type, String text, String clientName, int posX, int posY){
+	public Message(int type, String text, String clientName, int posX, int posY, ArrayList<Client> clients){
 		this.type = type;
 		this.text = text;
 		this.clientName = clientName;
 		
 		this.posX = posX;
 		this.posY = posY;
-	}
-
-	public String getClientName() {
-		return clientName;
-	}
-	
-	
-	public Message(int type, String text, String clientName, int posX, int posY, ArrayList<Client> clients){
-		this(type, text, clientName, posX, posY);
 		this.clients = clients;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Message [text=" + text + ", clientName=" + clientName + ", type=" + type + ", posX=" + posX + ", posY="
-				+ posY + "]";
-	}
-	
+		return "Message [type=" + type + ", text=" + text + ", clientName=" + clientName + ", posX=" + posX + ", posY="
+				+ posY + ", clients=" + clients + "]";
+	}	
 }

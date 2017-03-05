@@ -57,7 +57,7 @@ public class Client extends Observable implements Serializable {
     /** Send a line of text */
     public void send(String text) {
         try {
-        	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y);
+        	Message message = new Message(Message._TEXT_, text, this.name, this.position_x, this.position_y, null);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
         } catch (IOException e) {
@@ -68,7 +68,7 @@ public class Client extends Observable implements Serializable {
     /** Send a line of text */
     public void sendPosition() {
         try {
-        	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y);
+        	Message message = new Message(Message._POSITION_, "", this.name, this.position_x, this.position_y, null);
         	System.out.println("Client.SendPosition :" +message);
         	objectOutputStream.writeObject(message);
         	//objectOutputStream.flush();
@@ -81,7 +81,7 @@ public class Client extends Observable implements Serializable {
     public void close() {
         try {
             socket.close();
-            Message message = new Message(Message._DISCONNECT_, "", this.name, 0, 0);
+            Message message = new Message(Message._DISCONNECT_, "", this.name, 0, 0, null);
         	objectOutputStream.writeObject(message);
         } catch (IOException ex) {
             notifyObservers(ex);

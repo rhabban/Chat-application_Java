@@ -33,11 +33,11 @@ public class ReceivingThread implements Runnable{
 					this.client.setName(msg.clientName);
 				}
 				if(msg.type == Message._CLIENTS_){
-					System.out.println("ReceivingThread.run : "+msg);
 					this.client.setClientsData(msg.clients);
 					continue;
 				}				
 				this.client.notifyObservers("<"+msg.clientName+">"+msg.text);
+				System.out.println("ReceivingThread.run thisClients : "+this.client.getClientsData());
         	}
 
         } catch (IOException | ClassNotFoundException e) {

@@ -37,7 +37,7 @@ public class ClientThread extends Thread{
 			ObjectInputStream streamIn = new ObjectInputStream(is);
 			streamOut = new ObjectOutputStream(clientSocket.getOutputStream());
 			
-			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0));
+			streamOut.writeObject(new Message(Message._TEXT_,"Quel est votre nom ?", "", 0, 0, null));
 			streamOut.flush();
 			Message msgName = (Message)streamIn.readObject();
 			String clientName = msgName.text;
@@ -46,9 +46,9 @@ public class ClientThread extends Thread{
 									
 			for(ClientThread thread : threads){
 				if(thread != this){
-					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0));
+					streamOut.writeObject(new Message(Message._TEXT_," s'est connecté !", clientName, 0, 0, null));
 				} else {
-					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0));
+					streamOut.writeObject(new Message( Message._NAME_, "Bonjour " + clientName + " et bienvenue dans le chat. Pour communiquer avec les utilisateurs, il est nécessaire de se positionner à leur portée", clientName, 0, 0, null));
 				}
 				//streamOut.flush();
 			}				
@@ -120,7 +120,11 @@ public class ClientThread extends Thread{
 		System.out.println("ClientThread.refreshClientData :"+this.clientData);
 		System.out.println(name+" position has been updated");
 		
-		sendMessage(new Message(Message._CLIENTS_, "", "", 0, 0, getClients()));
+		ArrayList<Client> clients = getClients();
+
+		System.out.println("ClientThread.refreshClientData getClients() :"+ clients);
+		
+		sendMessage(new Message(Message._CLIENTS_, "", "", 0, 0, clients));
 	}
 	
 	public ArrayList<Client> getClients(){
@@ -135,7 +139,7 @@ public class ClientThread extends Thread{
 	public synchronized void disconnect(){
 		try{
 			for(ClientThread thread : threads){
-				thread.streamOut.writeObject(new Message(Message._TEXT_, clientData.getName() + "s'est déconnecté !", "", 0, 0));
+				thread.streamOut.writeObject(new Message(Message._TEXT_, clientData.getName() + "s'est déconnecté !", "", 0, 0, null));
 				if(thread == this)
 					thread = null;
 			}
