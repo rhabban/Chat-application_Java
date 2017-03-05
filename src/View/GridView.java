@@ -31,14 +31,15 @@ public class GridView extends JPanel {
 	private MapManager mapManager;
 	
 	/** Draw borders for the client scope */
+	/*
 	public void paintComponent(Graphics g){
 	    super.paintComponent(g);
-	    //g.drawOval(-200, -200, 400, 400);
-	    g.drawRect(-200, -200, 400, 400);
+	    g.drawOval(-200, -200, 400, 400);
+	    //g.drawRect(-200, -200, 400, 400);
 	    //g.drawRoundRect(000, -200, 400, 400,100,100);
 	    
 	 // TODO :: La portée est affichée en brut ici, à changer dynamiquement !
-	}
+	}*/
 
 	public GridView(MapManager mapManager, Client currentClient) {
 		super();
